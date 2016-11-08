@@ -1,0 +1,36 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <BuildSteps>$(BuildSteps);RunBuild;BuildCleanup;</BuildSteps>
+    </PropertyGroup>
+
+    <Target Name="RunBuild" DependsOnTargets="Clean;CreateImage;Test;Tag" />
+
+    <Target Name="Clean">
+        <RemoveDir Directories="$(IntermediatePath)" />
+    </Target>
+
+    <Target Name="CreateImage">
+        <MakeDir Directories="$(IntermediatePath)" />
+        <Copy SourceFiles="@(Context)" DestinationFiles="@(Context -> '$(IntermediatePath)%(Link)')" />
+        <Exec Command="docker build . --pull --force-rm -t $(IntermediateTag) $(DockerBuildArgs)" WorkingDirectory="$(IntermediatePath)" />
+    </Target>
+
+    <Target Name="Test" />
+
+    <Target Name="Tag">
+        <PropertyGroup>
+            <ImageRegistry Condition="'$(ImageRegistry)'==''">testuser</ImageRegistry>
+            <ImageRepo Condition="'$(ImageRepo)'==''">$(MSBuildProjectName)</ImageRepo>
+            <ImageTag>$(ImageRegistry)/$(ImageRepo):$(ImageTagVersion)</ImageTag>
+        </PropertyGroup>
+        <Exec Command="docker tag $(IntermediateTag) $(ImageTag)" />
+        <ItemGroup>
+            <Images Include="$(ImageTag)" />
+        </ItemGroup>
+    </Target>
+
+    <Target Name="BuildCleanup">
+        <Exec Command="docker rmi $(IntermediateTag)" IgnoreExitCode="true" />
+    </Target>
+</Project>

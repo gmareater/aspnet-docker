@@ -1,0 +1,12 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <ItemDefinitionGroup>
+        <Context>
+            <Link>%(FileName)%(Extension)</Link>
+        </Context>
+    </ItemDefinitionGroup>
+
+    <PropertyGroup>
+        <IntermediatePath>$(MSBuildProjectDirectory)\obj\</IntermediatePath>
+        <IntermediateTag>$([System.Guid]::NewGuid())</IntermediateTag>
+    </PropertyGroup>
+</Project>

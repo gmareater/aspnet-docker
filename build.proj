@@ -1,0 +1,23 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Target Name="Build" DependsOnTargets="$(BuildDependsOn)">
+        <ItemGroup>
+            <SubProjects Include="**/build.proj" Exclude="$(MSBuildThisFile)" />
+        </ItemGroup>
+
+        <MSBuild Projects="%(SubProjects.Identity)"
+                 Targets="Build">
+            <Output TaskParameter="TargetOutputs" ItemName="Images" />
+        </MSBuild>
+
+        <Message Text="Images created: @(Images, '%0A - ')" Importance="High" />
+    </Target>
+
+    <Target Name="Publish">
+        <ItemGroup>
+            <_PublishImages Include="@(Images)" Condition="'%(Images.Publish)'!='false'" />
+        </ItemGroup>
+        <Message Text="Attempt to publish images: @(_PublishImages, '%0A - ')" Importance="High" />
+        <Exec Command="docker push %(_PublishImages.Identity)" />
+        <Message Text="Publish done" Importance="High"/>
+    </Target>
+</Project>

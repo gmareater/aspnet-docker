@@ -1,0 +1,39 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="..\..\..\build\common.props" />
+
+    <PropertyGroup>
+        <ImageTagVersion>1.1.0-msbuild-$(BuildNumber)</ImageTagVersion>
+        <ImageRepo>aspnetcore-build-nightly</ImageRepo>
+        <DockerBuildArgs>--build-arg aspnetCoreVersion=1.1.0-preview2-$(BuildNumber)</DockerBuildArgs>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Context Include="NuGet.config" />
+        <Context Include="Dockerfile" />
+        <Context Include="$(NightlyPackageList)" Condition="Exists('$(NightlyPackageList)')">
+            <Link>cache.project.json</Link>
+        </Context>
+    </ItemGroup>
+
+    <Target Name="ValidateProperties">
+        <ItemGroup>
+            <ExpectedNightlyParams Include="NightlyPackageList" />
+            <ExpectedNightlyParams Include="BuildNumber" />
+        </ItemGroup>
+        <Error Text="Missing property '%(ExpectedNightlyParams.Identity)'" Condition="'$(%(ExpectedNightlyParams.Identity))'==''"/>
+        <Error Text="$(NightlyPackageList) does not exist" Condition="!Exists('$(NightlyPackageList)')"/>
+    </Target>
+
+
+    <Target Name="Build"
+            DependsOnTargets="ValidateProperties"
+            Returns="@(Images)">
+        <!--
+        RunEachTargetSeparately=true ensures each target is always run, even if earlier targets fail.
+        This is essential for ensuring build script doesn't leave behind bad images.
+         -->
+        <CallTarget Targets="$(BuildSteps)" RunEachTargetSeparately="True" />
+    </Target>
+
+    <Import Project="..\..\..\build\common.targets" />
+</Project>
