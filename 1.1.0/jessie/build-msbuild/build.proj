@@ -7,6 +7,7 @@
         <DockerBuildArgs>--build-arg aspnetCoreVersion=1.1.0-preview2-$(BuildNumber)</DockerBuildArgs>
     </PropertyGroup>
 
+    <!-- define items that go into the build context -->
     <ItemGroup>
         <Context Include="NuGet.config" />
         <Context Include="Dockerfile" />
@@ -16,16 +17,21 @@
     </ItemGroup>
 
     <Target Name="ValidateProperties">
+        <!-- gatekeeper target to ensure required properties are present -->
         <ItemGroup>
             <ExpectedNightlyParams Include="NightlyPackageList" />
             <ExpectedNightlyParams Include="BuildNumber" />
         </ItemGroup>
-        <Error Text="Missing property '%(ExpectedNightlyParams.Identity)'" Condition="'$(%(ExpectedNightlyParams.Identity))'==''"/>
-        <Error Text="$(NightlyPackageList) does not exist" Condition="!Exists('$(NightlyPackageList)')"/>
+        <Error Text="Missing property '%(ExpectedNightlyParams.Identity)'"
+               Condition="'$(%(ExpectedNightlyParams.Identity))'==''"/>
+        <Error Text="$(NightlyPackageList) does not exist"
+               Condition="!Exists('$(NightlyPackageList)')"/>
     </Target>
 
     <Target Name="TestNightly" AfterTargets="Test">
-        <Exec Command="docker run --rm -i -v &quot;$(MSBuildThisFileDirectory)test:/test&quot; $(IntermediateTag) sh /test/test.sh" IgnoreStandardErrorWarningFormat="true" />
+        <!-- mounts local test folder and runs the test script -->
+        <Exec Command="docker run --rm -i -v &quot;$(MSBuildThisFileDirectory)test:/test&quot; $(IntermediateTag) sh /test/test.sh"
+              IgnoreStandardErrorWarningFormat="true" />
     </Target>
 
     <Target Name="Build"

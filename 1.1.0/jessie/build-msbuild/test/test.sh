@@ -3,7 +3,7 @@
 set -e
 
 # colors
-GRAY="\033[1;30m"
+GRAY="\033[0;90m"
 RED="\033[0;31m"
 CYAN="\033[1;36m"
 GREEN="\033[0;32m"
@@ -29,7 +29,7 @@ test_restore() {
 
 test_build() {
     cd /tmp/SimpleWebServer/
-    dotnet build /v:m
+    dotnet build /nologo /v:m
 }
 
 test_run() {
@@ -54,7 +54,7 @@ test_run() {
 
 # main
 for t in test_restore test_build test_run; do
-    log "${CYAN}Starting $t\n\n"
+    log "${CYAN}Starting $t"
     $t
-    log "${GREEN}$t passed"
+    log "${GREEN}$t passed\n\n"
 done

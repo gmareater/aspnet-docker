@@ -12,8 +12,11 @@
 
     <Target Name="CreateImage">
         <MakeDir Directories="$(IntermediatePath)" />
-        <Copy SourceFiles="@(Context)" DestinationFiles="@(Context -> '$(IntermediatePath)%(Link)')" />
-        <Exec Command="docker build . --pull --force-rm -t $(IntermediateTag) $(DockerBuildArgs)" WorkingDirectory="$(IntermediatePath)" />
+        <Copy SourceFiles="@(Context)"
+              DestinationFiles="@(Context -> '$(IntermediatePath)%(Link)')" />
+        <Exec Command="docker build . --pull --force-rm -t $(IntermediateTag) $(DockerBuildArgs)"
+              WorkingDirectory="$(IntermediatePath)"
+              IgnoreStandardErrorWarningFormat="true" />
     </Target>
 
     <Target Name="Test" />
@@ -31,6 +34,8 @@
     </Target>
 
     <Target Name="BuildCleanup">
-        <Exec Command="docker rmi $(IntermediateTag)" IgnoreExitCode="true" />
+        <Exec Command="docker rmi $(IntermediateTag)"
+              IgnoreExitCode="true"
+              IgnoreStandardErrorWarningFormat="true" />
     </Target>
 </Project>

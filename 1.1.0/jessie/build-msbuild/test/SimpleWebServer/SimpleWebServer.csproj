@@ -12,10 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="1.1.0-*" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.0-*" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="$(ASPNETCORE_VERSION)" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="$(ASPNETCORE_VERSION)" />
     <PackageReference Include="Microsoft.NETCore.App" Version="1.1.0" />
-    <PackageReference Include="Microsoft.NET.Sdk" Version="1.0.0-alpha-20161102-2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NET.Sdk" Version="1.0.0-*" PrivateAssets="All" />
   </ItemGroup>
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
