@@ -18,5 +18,5 @@ export DotnetCliVersion=$(<$cwd/CliVersion.txt)
 if test ! -x $DOTNET_HOME/dotnet || test "$($DOTNET_HOME/dotnet --version)" != $DotnetCliVersion ; then
     $cwd/scripts/dotnet-install.sh --install-dir $DOTNET_HOME --version $DotnetCliVersion
 fi
-
+echo "  => msbuild build.proj /nologo $@"
 $DOTNET_HOME/dotnet msbuild build.proj /nologo "$@"
