@@ -14,6 +14,12 @@ log() {
     printf "${GRAY}log: $@${NC}\n"
 }
 
+log_tc() {
+    if [ "$TEAMCITY_VERSION" != '' ]; then
+        echo "##teamcity[$@]"
+    fi
+}
+
 fatal() {
     printf "${RED}error: $@${NC}\n"
     exit 1
@@ -43,7 +49,9 @@ test_run() {
         retry=$((retry - 1))
         if [ $retry -le 0 ]; then
             kill $pid
-            fatal 'Exceeded maximum attempts to connect to local web server'
+            local msg='Exceeded maximum attempts to connect to local web server'
+            log_tc "testFailed name='$t' message = '$msg'"
+            fatal $msg
         fi
         log "$(date) - waiting for connection to $url..."
         sleep 1
@@ -54,7 +62,9 @@ test_run() {
 
 # main
 for t in test_restore test_build test_run; do
+    log_tc "testStarted name='$t'"
     log "${CYAN}Starting $t"
     $t
     log "${GREEN}$t passed\n\n"
+    log_tc "testFinished name='$t'"
 done

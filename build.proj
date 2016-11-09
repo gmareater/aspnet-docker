@@ -1,5 +1,14 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Target Name="Build" DependsOnTargets="$(BuildDependsOn)">
+    <PropertyGroup>
+        <ArtifactsDir>$(MSBuildThisFileDirectory)\artifacts\</ArtifactsDir>
+        <ImageListArtifact>$(ArtifactsDir)images.txt</ImageListArtifact>
+    </PropertyGroup>
+
+    <Target Name="Clean">
+        <RemoveDir Directories="$(ArtifactsDir)" />
+    </Target>
+
+    <Target Name="Build" DependsOnTargets="Clean">
         <ItemGroup>
             <SubProjects Include="**/build.proj" Exclude="$(MSBuildThisFile)" />
         </ItemGroup>
@@ -10,22 +19,28 @@
         </MSBuild>
 
         <Message Text="Images created: @(Images, '%0A - ')" Importance="High" />
+        <MakeDir Directories="$(ArtifactsDir)" />
+        <WriteLinesToFile File="$(ImageListArtifact)" Lines="@(Images)" Overwrite="true" />
     </Target>
 
+    <Target Name="RemoveImages">
+        <Message Text="Attempt to remove images: @(Images, '%0A - ')" Importance="High" />
+        <Exec Command="docker rmi %(Images.Identity)" IgnoreExitCode="true" />
+    </Target>
+
+    <Target Name="PostBuildClean"
+            DependsOnTargets="RemoveImages"
+            AfterTargets="Build"
+            Condition="'$(KeepImages)'=='false'" />
+
     <Target Name="Publish">
-        <ItemGroup>
-            <_PublishImages Include="@(Images)" Condition="'%(Images.Publish)'!='false'" />
-        </ItemGroup>
-        <Message Text="Attempt to publish images: @(_PublishImages, '%0A - ')" Importance="High" />
-        <Exec Command="docker push %(_PublishImages.Identity)" />
+        <Message Text="Attempt to publish images: @(Images, '%0A - ')" Importance="High" />
+        <Exec Command="docker push %(Images.Identity)" />
         <Message Text="Publish done" Importance="High"/>
     </Target>
 
-    <Target Name="RemovePublishedImages" AfterTargets="Publish">
-        <ItemGroup>
-            <_PublishImages Include="@(Images)" Condition="'%(Images.Publish)'!='false'" />
-        </ItemGroup>
-        <Message Text="Attempt to remove images: @(_PublishImages, '%0A - ')" Importance="High" />
-        <Exec Command="docker rmi %(_PublishImages.Identity)" />
-    </Target>
+    <Target Name="PostPublishClean"
+            DependsOnTargets="RemoveImages"
+            AfterTargets="Publish"
+            Condition="'$(KeepImages)'!='true'" />
 </Project>
