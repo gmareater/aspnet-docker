@@ -31,7 +31,7 @@
     <Target Name="TestNightly" AfterTargets="Test">
         <!-- mounts local test folder and runs the test script -->
         <PropertyGroup>
-            <_TestArgs Condition="'$(TEAMCITY_VERSION)'!=''"> -e TEAMCITY_VERSION=$(TEAMCITY_VERSION)</_TestArgs>
+            <_TestArgs Condition="'$(TEAMCITY_VERSION)'!=''"> -e "TEAMCITY_VERSION=$(TEAMCITY_VERSION)"</_TestArgs>
         </PropertyGroup>
         <Exec Command="docker run --rm -i $(_TestArgs) -v &quot;$(MSBuildThisFileDirectory)test:/test&quot; $(IntermediateTag) sh /test/test.sh"
               IgnoreStandardErrorWarningFormat="true" />
