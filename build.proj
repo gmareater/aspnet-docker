@@ -20,4 +20,12 @@
         <Exec Command="docker push %(_PublishImages.Identity)" />
         <Message Text="Publish done" Importance="High"/>
     </Target>
+
+    <Target Name="RemovePublishedImages" AfterTargets="Publish">
+        <ItemGroup>
+            <_PublishImages Include="@(Images)" Condition="'%(Images.Publish)'!='false'" />
+        </ItemGroup>
+        <Message Text="Attempt to remove images: @(_PublishImages, '%0A - ')" Importance="High" />
+        <Exec Command="docker rmi %(_PublishImages.Identity)" />
+    </Target>
 </Project>
