@@ -28,11 +28,6 @@
         <Exec Command="docker rmi %(Images.Identity)" IgnoreExitCode="true" />
     </Target>
 
-    <Target Name="PostBuildClean"
-            DependsOnTargets="RemoveImages"
-            AfterTargets="Build"
-            Condition="'$(KeepImages)'=='false'" />
-
     <Target Name="Publish">
         <Message Text="Attempt to publish images: @(Images, '%0A - ')" Importance="High" />
         <Exec Command="docker push %(Images.Identity)" />

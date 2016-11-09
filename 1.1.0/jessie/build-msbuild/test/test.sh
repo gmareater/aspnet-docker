@@ -61,10 +61,11 @@ test_run() {
 }
 
 # main
-for t in test_restore test_build test_run; do
-    log_tc "testStarted name='$t'"
-    log "${CYAN}Starting $t"
-    $t
-    log "${GREEN}$t passed\n\n"
-    log_tc "testFinished name='$t'"
+for t_func in test_restore test_build test_run; do
+    testname="Build.MSBuild.1.1.0.SimpleWebServer.$t_func"
+    log_tc "testStarted name='$testname'"
+    log "${CYAN}Starting $testname"
+    $t_func
+    log "${GREEN}$testname passed\n\n"
+    log_tc "testFinished name='$testname'"
 done
