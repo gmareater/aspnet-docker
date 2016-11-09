@@ -24,6 +24,9 @@
         <Error Text="$(NightlyPackageList) does not exist" Condition="!Exists('$(NightlyPackageList)')"/>
     </Target>
 
+    <Target Name="TestNightly" AfterTargets="Test">
+        <Exec Command="docker run --rm -i -v &quot;$(MSBuildThisFileDirectory)test:/test&quot; $(IntermediateTag) sh /test/test.sh" IgnoreStandardErrorWarningFormat="true" />
+    </Target>
 
     <Target Name="Build"
             DependsOnTargets="ValidateProperties"
