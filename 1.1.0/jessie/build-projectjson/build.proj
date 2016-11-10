@@ -2,7 +2,7 @@
     <Import Project="..\..\..\build\common.props" />
 
     <PropertyGroup>
-        <ImageTagVersion>1.1.0-msbuild-$(BuildNumber)</ImageTagVersion>
+        <ImageTagVersion>1.1.0-projectjson-$(BuildNumber)</ImageTagVersion>
         <ImageRepo>aspnetcore-build-nightly</ImageRepo>
         <DockerBuildArgs>--build-arg aspnetCoreVersion=1.1.0-preview2-$(BuildNumber)</DockerBuildArgs>
     </PropertyGroup>

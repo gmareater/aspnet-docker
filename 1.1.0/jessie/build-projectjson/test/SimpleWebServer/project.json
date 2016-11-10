@@ -1,0 +1,19 @@
+{
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+  "dependencies": {
+    "Microsoft.AspNetCore.Hosting": "__VERSION__",
+    "Microsoft.AspNetCore.Server.Kestrel": "__VERSION__"
+  },
+  "frameworks": {
+    "netcoreapp1.1": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.1.0",
+          "type": "platform"
+        }
+      }
+    }
+  }
+}

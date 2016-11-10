@@ -8,5 +8,6 @@
     <PropertyGroup>
         <IntermediatePath>$(MSBuildProjectDirectory)\obj\</IntermediatePath>
         <IntermediateTag>$([System.Guid]::NewGuid())</IntermediateTag>
+        <DefaultBuildSteps>RunBuild;BuildCleanup;</DefaultBuildSteps>
     </PropertyGroup>
 </Project>

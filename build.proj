@@ -4,15 +4,17 @@
         <ImageListArtifact>$(ArtifactsDir)images.txt</ImageListArtifact>
     </PropertyGroup>
 
+    <ItemGroup>
+        <SubProjects Include="**/build.proj" Exclude="$(MSBuildThisFile)" />
+    </ItemGroup>
+
     <Target Name="Clean">
         <RemoveDir Directories="$(ArtifactsDir)" />
+        <MSBuild Projects="%(SubProjects.Identity)"
+                 Targets="Clean" />
     </Target>
 
     <Target Name="Build" DependsOnTargets="Clean">
-        <ItemGroup>
-            <SubProjects Include="**/build.proj" Exclude="$(MSBuildThisFile)" />
-        </ItemGroup>
-
         <MSBuild Projects="%(SubProjects.Identity)"
                  Targets="Build">
             <Output TaskParameter="TargetOutputs" ItemName="Images" />

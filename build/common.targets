@@ -1,8 +1,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-    <PropertyGroup>
-        <BuildSteps>$(BuildSteps);RunBuild;BuildCleanup;</BuildSteps>
-    </PropertyGroup>
+    <Target Name="DefaultBuild">
+        <!--
+        RunEachTargetSeparately=true ensures each target is always run, even if earlier targets fail.
+        This is essential for ensuring build script doesn't leave behind bad images.
+         -->
+        <CallTarget Targets="$(DefaultBuildSteps)" RunEachTargetSeparately="true" />
+    </Target>
 
     <Target Name="RunBuild" DependsOnTargets="Clean;CreateImage;Test;Tag" />
 

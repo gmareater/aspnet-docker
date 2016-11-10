@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <!-- TODO lift to netcoreapp1.1 until https://github.com/dotnet/dotnet-docker-nightly/issues/116 is resolved -->
     <TargetFramework>netcoreapp1.0</TargetFramework>
   </PropertyGroup>
 

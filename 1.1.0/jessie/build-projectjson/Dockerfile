@@ -1,4 +1,4 @@
-FROM microsoft/dotnet-nightly:1.1.0-sdk-msbuild-004050
+FROM microsoft/dotnet-nightly:1.1.0-sdk-projectjson
 
 RUN set -ex \
   && for key in \
@@ -34,22 +34,14 @@ RUN buildDeps='xz-utils' \
 
 # set up network
 ENV ASPNETCORE_URLS http://+:80
+ENV NUGET_XMLDOC_MODE skip
 
-# set env var for packages cache
-ENV DOTNET_HOSTING_OPTIMIZATION_CACHE /packagescache
+ARG aspnetCoreVersion
+ENV ASPNETCORE_VERSION $aspnetCoreVersion
+COPY NuGet.config /tmp/warmup/NuGet.config
+COPY cache.project.json /tmp/warmup/project.json
 
-# copy the ASP.NET packages manifest
-COPY packagescache.project.json /tmp/warmup/packagescache.project.json
-
-# set up package cache and other tools
-RUN curl -o /tmp/packagescache.tar.gz \
-    https://distaspnet.blob.core.windows.net/packagecache/1.1.0/aspnetcore.packagecache-1.1.0-preview1-final-debian.8-x64.tar.gz && \
-    mkdir /packagescache && cd /packagescache && \
-    tar xvf /tmp/packagescache.tar.gz && \
-    rm /tmp/packagescache.tar.gz && \
-    # restore packages
-    dotnet nuget restore /tmp/warmup/packagescache.project.json \
-        --source https://api.nuget.org/v3/index.json && \
-    rm -rf /tmp/warmup/
+RUN dotnet restore /tmp/warmup/project.json \
+    && rm -rf /tmp/warmup
 
 WORKDIR /

@@ -25,11 +25,16 @@ fatal() {
     exit 1
 }
 
+replace_placeholder() {
+    sed -i.bak "s/__VERSION__/${ASPNETCORE_VERSION}/g" $1
+}
+
 # tests
 test_restore() {
     mkdir -p /tmp/SimpleWebServer
     cp -R /test/SimpleWebServer/ /tmp/
     cd /tmp/SimpleWebServer/
+    replace_placeholder project.json
     dotnet restore --source /root/.nuget/packages
 }
 
@@ -62,7 +67,7 @@ test_run() {
 
 # main
 for t_func in test_restore test_build test_run; do
-    testname="Build.MSBuild.1.1.0.SimpleWebServer.$t_func"
+    testname="Build.ProjectJson.1.1.0.SimpleWebServer.$t_func"
     log_tc "testStarted name='$testname'"
     log "${CYAN}Starting $testname"
     $t_func
